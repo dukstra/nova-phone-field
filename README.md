@@ -1,105 +1,49 @@
-# A global Phone Number field for Laravel Nova
+# Dukstra Nova Phone Field
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/bissolli/nova-phone-field.svg?style=flat-square)](https://packagist.org/packages/bissolli/nova-phone-field)
-[![Total Downloads](https://img.shields.io/packagist/dt/bissolli/nova-phone-field.svg?style=flat-square)](https://packagist.org/packages/bissolli/nova-phone-field)
-[![StyleCI](https://github.styleci.io/repos/157219733/shield?branch=master)](https://github.styleci.io/repos/157219733)
-
-Nova Phone Number field with a dynamic mask based on the country code inserted by the user.
-
-![screenshot of the phone field](https://raw.githubusercontent.com/bissolli/nova-phone-field/master/screenshots/nova-phone-field.gif)
+A Laravel Nova 5 phone field with country-specific input masks and optional
+custom formats. This is a Nova 5 / Vue 3 upgrade of `bissolli/nova-phone-field`.
 
 ## Requirements
 
-- Laravel Nova
-- Laravel Framework **5.7+ / 6.0+**
+- PHP 8.3+
+- Laravel 13
+- Laravel Nova 5
 
-**NOTE**: For Laravel version <= 5.6 use our package version [v.0.0.3](https://github.com/bissolli/nova-phone-field/tree/v0.0.3)
+## Install
 
-## Installation
-
-You can install this package into a Laravel app that uses [Nova](https://nova.laravel.com) via composer:
-
-```bash
-composer require bissolli/nova-phone-field
+```sh
+composer require dukstra/nova-phone-field
 ```
 
-## Usage
-
-Go straight to your Nova resource and use `Bissolli\NovaPhoneField\PhoneNumber` field:
+## Use
 
 ```php
-namespace App\Nova;
+use Dukstra\NovaPhoneField\PhoneNumber;
 
-use Bissolli\NovaPhoneField\PhoneNumber;
-
-class Member extends Resource
-{
-    // ...
-    
-    public function fields(Request $request)
-    {
-        return [
-            // ...
-            
-            PhoneNumber::make('Phone Number'),
-
-            // ...
-        ];
-    }
-}
+PhoneNumber::make('Phone Number', 'phone_number')
+    ->onlyCountries('ZA', 'ZW', 'US')
+    ->withCustomFormats('+27 ## ### ####', '+263 ## ### ####');
 ```
 
-Now you can view and add tags on the blog posts screen in your Nova app. All tags will be saved in the `tags` table. 
+`onlyCountries()` limits the built-in masks presented by the input. If omitted,
+all bundled country masks are available. `withCustomFormats()` adds the given
+mask strings, using `#` for a digit. To use only those custom masks, chain
+`onlyCustomFormats()` as well. The field keeps the submitted value in the same
+format the user entered; it does not convert values to E.164.
 
-### Filtering
+The index and detail views link non-empty values using a `tel:` URL with
+non-digit characters removed. The visible phone value remains unchanged.
 
-By default, every country mask available inside `bissolli/nova-phone-field/resources/js/data/phone-masks.json` will be loaded and working. However, you can always select the desired countries calling the `onlyCountries()` method.
+## Build assets
 
-```php
-PhoneNumber::make('Phone Number')
-    ->onlyCountries('BR', 'US', 'IE'),
+Nova 5's field assets use Vue 3 and Laravel Nova Devtool. After installing the
+Composer dependencies (including dev dependencies) and NPM dependencies, run:
+
+```sh
+npm ci
+npm run production
 ```
-
-### Custom number format
-
-You can also add custom phone formats with `withCustomFormats()`.
-
-```php
-PhoneNumber::make('Phone Number')
-    ->withCustomFormats('+123 ## #.#', '+123 ## ####.####'),
-```
-
-Or else use only your own phone formats calling for `withCustomFormats()` among with `onlyCustomFormats()`.
-
-```php
-PhoneNumber::make('Phone Number')
-    ->withCustomFormats('+123 ## #.#', '+123 ## ####.####')
-    ->onlyCustomFormats(),
-```
-
-### Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security
-
-If you discover any security-related issues, please email gustavo.bissolli@gmail.com instead of using the issue tracker.
-
-## Credits
-
-- [Gustavo Bissolli](https://github.com/bissolli)
-
-Special thanks to [Robin Herbots](https://github.com/RobinHerbots) who built one of the best [InputMask](https://github.com/RobinHerbots/Inputmask) from the internet. 
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/bissolli/nova-phone-field/badge.svg?style=beer-square)](https://beerpay.io/bissolli/nova-phone-field)  [![Beerpay](https://beerpay.io/bissolli/nova-phone-field/make-wish.svg?style=flat-square)](https://beerpay.io/bissolli/nova-phone-field?focus=wish)
+MIT. See [LICENSE](LICENSE).
