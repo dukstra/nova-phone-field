@@ -1,6 +1,6 @@
 <?php
 
-namespace Bissolli\NovaPhoneField;
+namespace Dukstra\NovaPhoneField;
 
 use Illuminate\Support\Arr;
 use Laravel\Nova\Fields\Field;

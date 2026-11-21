@@ -1,6 +1,6 @@
 <template>
-    <default-field :field="field" :errors="errors">
-        <template slot="field">
+    <DefaultField :field="field" :errors="errors" :show-help-text="showHelpText">
+        <template #field>
             <input
                 :id="field.name"
                 type="text"
@@ -11,14 +11,13 @@
                 v-model="value"
             />
         </template>
-    </default-field>
+    </DefaultField>
 </template>
 
 <script>
 import PhoneMasks from '../data/phone-masks.json';
 import Inputmask from 'inputmask';
 import { FormField, HandlesValidationErrors } from 'laravel-nova';
-import { map, filter } from 'lodash';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -33,8 +32,7 @@ export default {
     computed: {
         availableMasks() {
             let masks = this.builtInMasks.concat(this.customMasks);
-            masks = masks.sort();
-            masks = map(masks, mask => this.formatToInputmask(mask));
+            masks = masks.sort().map(mask => this.formatToInputmask(mask));
 
             return !masks.length ? '9{1,20}' : masks;
         }
@@ -54,13 +52,16 @@ export default {
         },
 
         setBuiltInMasks() {
-            if (this.field.onlyCustomFormats) return [];
+            if (this.field.onlyCustomFormats) {
+                this.builtInMasks = [];
+                return;
+            }
 
             let countries = this.field.onlyCountries || [];
 
             let masks = !countries.length ? PhoneMasks : this.loadMasksForCountries(countries);
 
-            this.builtInMasks = map(masks, obj => obj.mask);
+            this.builtInMasks = masks.map(obj => obj.mask);
         },
 
         setCustomMasks() {
@@ -68,9 +69,7 @@ export default {
         },
 
         loadMasksForCountries(countries) {
-            return filter(PhoneMasks, obj => {
-                return countries.includes(obj.country_code);
-            });
+            return PhoneMasks.filter(obj => countries.includes(obj.country_code));
         },
 
         formatToInputmask(value) {
@@ -78,7 +77,7 @@ export default {
         },
 
         fill(formData) {
-            formData.append(this.field.attribute, this.value || '');
+            formData.append(this.fieldAttribute, this.value || '');
         },
 
         handleChange(value) {

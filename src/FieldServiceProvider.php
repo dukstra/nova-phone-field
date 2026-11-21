@@ -1,6 +1,6 @@
 <?php
 
-namespace Bissolli\NovaPhoneField;
+namespace Dukstra\NovaPhoneField;
 
 use Laravel\Nova\Nova;
 use Laravel\Nova\Events\ServingNova;
@@ -16,8 +16,7 @@ class FieldServiceProvider extends ServiceProvider
     public function boot()
     {
         Nova::serving(function (ServingNova $event) {
-            Nova::script('nova-phone-field', __DIR__.'/../dist/js/field.js');
-            Nova::style('nova-phone-field', __DIR__.'/../dist/css/field.css');
+            Nova::mix('nova-phone-field', __DIR__.'/../dist/mix-manifest.json');
         });
     }
 

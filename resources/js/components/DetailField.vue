@@ -1,12 +1,12 @@
 <template>
-    <panel-item :field="field">
-        <template slot="value">
+    <PanelItem :field="field">
+        <template #value>
             <a :href="`tel:+${unmaskedValue}`" v-if="field.value" class="no-underline text-primary">
                 {{ field.value }}
             </a>
             <p v-else>&mdash;</p>
         </template>
-    </panel-item>
+    </PanelItem>
 </template>
 
 <script>
